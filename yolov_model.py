@@ -1,19 +1,18 @@
 import os
-import gdown
+import requests
 from ultralytics import YOLO
 
-MODEL_PATH = "best12.pt"
-MODEL_URL = "https://drive.google.com/uc?id=1Gps_dqoQkJMIMYyB7Aox1N07SXtnQr9o"
+MODEL_URL = "https://huggingface.co/septialeyda/seaweed-yolov8-model/resolve/main/best-12.pt"
+MODEL_PATH = "best-12.pt"
 
 def download_model():
     if not os.path.exists(MODEL_PATH):
-        print("⬇️ Downloading YOLO model from Google Drive...")
-        gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
+        print("⬇️ Downloading YOLO model from Hugging Face...")
+        r = requests.get(MODEL_URL, stream=True)
+        with open(MODEL_PATH, 'wb') as f:
+            for chunk in r.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
 
 download_model()
 model = YOLO(MODEL_PATH)
-
-def run_yolo(input_path, output_path):
-    results = model(input_path, save=False)
-    img = results[0].plot()
-    cv2.imwrite(output_path, img)
