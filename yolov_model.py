@@ -1,9 +1,15 @@
 import os
 import requests
 from ultralytics import YOLO
+import gdown
 
-MODEL_URL = "https://huggingface.co/septialeyda/seaweed-yolov8-model/resolve/main/best-12.pt"
-MODEL_PATH = "best-12.pt"
+MODEL_PATH = "best12.pt"
+MODEL_URL = "https://drive.google.com/uc?id=1Gps_dqoQkJMIMYyB7Aox1N07SXtnQr9o"
+
+if not os.path.exists(MODEL_PATH):
+    print("Downloading model...")
+    gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
+
 
 def download_model():
     if not os.path.exists(MODEL_PATH):
