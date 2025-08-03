@@ -1,25 +1,10 @@
-import os
-import requests
 from ultralytics import YOLO
-import gdown
+import cv2
 
-MODEL_PATH = "best12.pt"
-MODEL_URL = "https://drive.google.com/uc?id=1Gps_dqoQkJMIMYyB7Aox1N07SXtnQr9o"
+# Load model once
+model = YOLO('best12.pt')  # or your own .pt model
 
-# Download model if not exists
-if not os.path.exists(MODEL_PATH):
-    print("Downloading model...")
-    gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
-
-# Initialize model
-model = YOLO(MODEL_PATH)
-
-# ✅ Add this function
-def run_yolo(image_path):
-    """
-    Runs YOLO inference on the given image.
-    :param image_path: Path to input image
-    :return: YOLO prediction results
-    """
-    results = model.predict(image_path, conf=0.25)
-    return results
+def run_yolo(input_path, output_path):
+    results = model(input_path, save=False)
+    img = results[0].plot()  # returns image array with bounding boxes
+    cv2.imwrite(output_path, img)
